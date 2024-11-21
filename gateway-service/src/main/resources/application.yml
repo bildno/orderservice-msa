@@ -35,6 +35,15 @@ spring:
 #            - StripPrefix=1 -> 첫번째 접두어를 제거
             - AuthorizationHeaderFilter
 
+        - id: product-service
+          uri: lb://PRODUCT-SERVICE
+          predicates:
+            - Path=/product-service/**
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/product-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
+
         - id: first-service
           uri: lb://FIRST-SERVICE
           predicates:
