@@ -42,7 +42,7 @@ public class ProductService {
         MultipartFile productImage = dto.getProductImage();
 
         String uniqueFileName
-                = UUID.randomUUID() + "_" + productImage.getOriginalFilename();
+                = UUID.randomUUID() + "_" +     productImage.getOriginalFilename();
 
         /*
         File file

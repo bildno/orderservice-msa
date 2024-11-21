@@ -25,6 +25,15 @@ spring:
       max-file-size: 5MB
 
   # aws s3 버킷 연동에 필요한 설정이 들어가는 자리
+  cloud:
+    aws:
+      credentials:
+        accessKey: aws ??? ?
+        secretKey: aws ??? ?
+      region:
+        static: ap-northeast-2
+      s3:
+        bucket: orderservice-prod-img8917
 
 
 jwt:
