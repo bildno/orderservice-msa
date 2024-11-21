@@ -27,14 +27,8 @@ public class SecurityConfig {
     // 시큐리티 기본 설정 (권한 처리, 초기 로그인 화면 없애기 등등...)
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        // 스프링 시큐리티에서 기본으로 제공하는 CSRF 토큰 공격을 방지하기 위한 장치 해제.
-        // CSRF(Cross Site Request Forgery) 사이트 간 요청 위조
         http.csrf(csrfConfig -> csrfConfig.disable());
-
         http.cors(Customizer.withDefaults()); // 직접 커스텀한 CORS 설정을 적용하겠다.
-
-        // 세션 관리 상태를 사용하지 않고
-        // STATELESS한 토큰을 사용하겠다.
         http.sessionManagement(session ->
                 session.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
 
@@ -48,13 +42,6 @@ public class SecurityConfig {
                 // 커스텀 필터를 등록.
                 // 시큐리티에서 기본으로 인증, 인가 처리를 해 주는 UsernamePasswordAuthenticationFilter 전에 내 필터 add
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
-
-        http
-                .exceptionHandling(exception -> {
-                    // 인증 과정에서 예외가 발생한 경우 그 예외를 핸들링 할 객체를 등록.
-                    exception.authenticationEntryPoint(customAuthenticationEntryPoint);
-                });
-
 
         return http.build();
     }
