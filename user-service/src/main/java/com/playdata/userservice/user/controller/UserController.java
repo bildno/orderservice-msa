@@ -137,7 +137,14 @@ public class UserController {
     }
 
 
-
+    @GetMapping("/findByEmail")
+    public ResponseEntity<?> findByEmail(@RequestParam String email) {
+        log.info("/user/findByEmail: GET!, email: {}", email);
+        UserResDto resDto = userService.findByEmail(email);
+        CommonResDto commonDto
+                = new CommonResDto(HttpStatus.OK, "이메일로 회원 조회 완료", resDto);
+        return new ResponseEntity<>(commonDto, HttpStatus.OK);
+    }
 
 
 

@@ -5,7 +5,6 @@ import com.playdata.productservice.product.dto.ProductResDto;
 import com.playdata.productservice.product.dto.ProductSaveReqDto;
 import com.playdata.productservice.product.dto.ProductSearchDto;
 import com.playdata.productservice.product.entity.Product;
-import com.playdata.productservice.product.entity.QProduct;
 import com.playdata.productservice.product.repository.ProductRepository;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -19,9 +18,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.util.List;
 import java.util.UUID;
 
@@ -125,6 +122,21 @@ public class ProductService {
         s3Config.deleteFromS3Bucket(imageUrl);
 
         productRepository.deleteById(id);
+    }
+
+    public ProductResDto getProductInfo(Long prodId) {
+        Product foundProduct = productRepository.findById(prodId).orElseThrow(
+                () -> new EntityNotFoundException("Product with id " + prodId + " not found")
+        );
+        return foundProduct.fromEntity();
+    }
+
+    public void updateStockQuantity(Long prodId, Integer quantity) {
+        Product product = productRepository.findById(prodId).orElseThrow(
+                () -> new EntityNotFoundException("Product with id " + prodId + " not found")
+        );
+        product.updateStockQuantity(quantity);
+        productRepository.save(product);
     }
 }
 

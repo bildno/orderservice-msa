@@ -91,6 +91,13 @@ public class UserService {
                 () -> new EntityNotFoundException("User not found")
         );
     }
+
+    public UserResDto findByEmail(String email) {
+        User foundUser = userRepository.findByEmail(email).orElseThrow(
+                () -> new EntityNotFoundException("User not found"));
+
+        return foundUser.fromEntity();
+    }
 }
 
 
