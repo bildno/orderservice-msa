@@ -21,6 +21,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static com.playdata.productservice.product.entity.QProduct.*;
 
@@ -131,12 +132,19 @@ public class ProductService {
         return foundProduct.fromEntity();
     }
 
-    public void updateStockQuantity(Long prodId, Integer quantity) {
-        Product product = productRepository.findById(prodId).orElseThrow(
-                () -> new EntityNotFoundException("Product with id " + prodId + " not found")
+    public void updateStockQuantity(ProductResDto dto) {
+        Product product = productRepository.findById(dto.getId()).orElseThrow(
+                () -> new EntityNotFoundException("Product with id " + dto.getId() + " not found")
         );
-        product.updateStockQuantity(quantity);
+        product.updateStockQuantity(dto.getStockQuantity());
         productRepository.save(product);
+    }
+
+    public List<ProductResDto> getproductsName(List<Long> productIds) {
+        List<Product> products = productRepository.findByIdIn(productIds);
+        return products.stream()
+                .map(Product::fromEntity)
+                .collect(Collectors.toList());
     }
 }
 

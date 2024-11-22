@@ -73,7 +73,7 @@ public class ProductController {
     }
 
     // 단일 상품 조회
-    @GetMapping("/{prodId}")
+    @GetMapping("/{prodId}/prod")
     public ResponseEntity<?> productInfo(@PathVariable Long prodId) {
         log.info("/product/{}: GET!", prodId);
         ProductResDto productInfo = productService.getProductInfo(prodId);
@@ -84,12 +84,22 @@ public class ProductController {
 
     // 수량 업데이트
     @PostMapping("/updateQuantity")
-    public ResponseEntity<?> updateStockQuantity(@RequestBody Map<String, String> params) {
-        Long productId = Long.valueOf(params.get("productId"));
-        int stockQuantity = Integer.valueOf(params.get("stockQuantity"));
-        productService.updateStockQuantity(productId, stockQuantity);
+    public ResponseEntity<?> updateStockQuantity(@RequestBody ProductResDto dto) {
+        productService.updateStockQuantity(dto);
         return new ResponseEntity<>(HttpStatus.OK);
     }
+
+    // 한 사용자의 모든 주문 내역 안에 있는 상품정보를 리턴하는 메서드
+    @PostMapping("/products/name")
+    public ResponseEntity<?> productsName(@RequestBody List<Long> productIds) {
+        log.info("/products/name: POST");
+        log.info("productIds: {}", productIds);
+        List<ProductResDto> resDtos = productService.getproductsName(productIds);
+        CommonResDto resDto
+                = new CommonResDto(HttpStatus.OK, "조회 완료", resDtos);
+        return new ResponseEntity<>(resDto, HttpStatus.OK);
+    }
+
 
 }
 

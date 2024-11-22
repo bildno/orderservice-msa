@@ -62,19 +62,19 @@ public class SseController {
         return emitter;
     }
 
-    public void sendOrderMessage(Ordering save) {
-        OrderingListResDto dto = save.fromEntity();
-        // 누구에게 메세지를 전달할 지 알려줘야 한다. (admin@admin.com이 받는다고 가정)
-        SseEmitter emitter = emitters.get("admin@admin.com");
-        try {
-            emitter.send(SseEmitter.event()
-                    .name("ordered")
-                    .data(dto));
-        } catch (IOException e) {
-            emitters.remove("admin@admin.com");
-        }
-
-    }
+//    public void sendOrderMessage(Ordering save) {
+//        OrderingListResDto dto = save.fromEntity(userInfo.getEmail(), productIdToNameMap);
+//        // 누구에게 메세지를 전달할 지 알려줘야 한다. (admin@admin.com이 받는다고 가정)
+//        SseEmitter emitter = emitters.get("admin@admin.com");
+//        try {
+//            emitter.send(SseEmitter.event()
+//                    .name("ordered")
+//                    .data(dto));
+//        } catch (IOException e) {
+//            emitters.remove("admin@admin.com");
+//        }
+//
+//    }
 
 
 

@@ -5,7 +5,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cloud.openfeign.EnableFeignClients;
 
 @SpringBootApplication
-@EnableFeignClients
+@EnableFeignClients // Feign Client를 사용하는 서비스에 추가.
 public class OrderingServiceApplication {
 
     public static void main(String[] args) {
