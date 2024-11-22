@@ -36,7 +36,7 @@ public class SecurityConfig {
             auth
 //                    .requestMatchers("/user/list").hasAnyRole("ADMIN")
                     .requestMatchers("/create", "/doLogin",
-                            "/refresh", "/").permitAll()
+                            "/refresh", "/", "/findByEmail").permitAll()
                     .anyRequest().authenticated();
         })
                 // 커스텀 필터를 등록.

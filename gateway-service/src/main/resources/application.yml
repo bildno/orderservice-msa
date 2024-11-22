@@ -44,6 +44,15 @@ spring:
             - RewritePath=/product-service/(?<segment>.*), /$\{segment}
             - AuthorizationHeaderFilter
 
+        - id: ordering-service
+          uri: lb://ORDERING-SERVICE
+          predicates:
+            - Path=/ordering-service/**
+          filters:
+            - RemoveRequestHeader=Cookie
+            - RewritePath=/ordering-service/(?<segment>.*), /$\{segment}
+            - AuthorizationHeaderFilter
+
         - id: first-service
           uri: lb://FIRST-SERVICE
           predicates:
