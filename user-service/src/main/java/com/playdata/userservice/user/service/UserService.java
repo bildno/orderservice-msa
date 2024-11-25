@@ -16,6 +16,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -97,6 +98,24 @@ public class UserService {
                 () -> new EntityNotFoundException("User not found"));
 
         return foundUser.fromEntity();
+    }
+
+    public List<UserResDto> getUsersByIds(List<Long> userIds) {
+        List<User> userList = userRepository.findByIdIn(userIds);
+        /*
+        List<UserResDto> dtoList = new ArrayList<>();
+
+        for (User user : userList) {
+            UserResDto dto = user.fromEntity();
+            dtoList.add(dto);
+        }
+
+        return dtoList;
+        */
+
+        return userList.stream()
+                .map(user -> user.fromEntity())
+                .collect(Collectors.toList());
     }
 }
 

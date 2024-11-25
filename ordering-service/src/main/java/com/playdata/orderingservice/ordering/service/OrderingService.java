@@ -17,6 +17,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.engine.jdbc.internal.DDLFormatterImpl;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -118,6 +119,106 @@ public class OrderingService {
                 = orderingRepository.findByUserId(userResDto.getId());
 
         // 주문 내역에서 모든 상품 ID 추출해야 함.
+        List<Long> productIds = getProductIds(orderingList);
+
+        // Product-service에게 상품 정보를 달라고 요청해야 함.
+        CommonResDto<List<ProductResDto>> products
+                = productServiceClient.getProducts(productIds);
+        List<ProductResDto> dtoList = products.getResult();
+
+        // product-service에게 받아온 리스트를 필요로 하는 정보로만 맵으로 매핑.
+        Map<Long, String> productIdToNameMap = getProductIdToNameMap(dtoList);
+
+        // Ordering 엔터티를 DTO로 변환하자. 주문 상세에 대한 변환도 필요하다!
+        List<OrderingListResDto> dtos = orderingList.stream()
+                .map(order -> order.fromEntity(userInfo.getEmail(), productIdToNameMap))
+                .collect(Collectors.toList());
+
+        return dtos;
+    }
+
+
+
+
+    public List<OrderingListResDto> orderList() {
+        // 1. 회원 구분 없이 모든 주문 내역을 전체 조회하기
+        List<Ordering> orderList = orderingRepository.findAll();
+
+        // 2. 모든 주문에서 필요한 user Id와 Product Id를 추출하자.
+        List<Long> userIds = orderList.stream()
+                .map(order -> order.getUserId())
+                .distinct()
+                .collect(Collectors.toList());
+
+        List<Long> productIds = getProductIds(orderList);
+
+        // 3. Feign Client로 사용자 정보와 상품 정보 조회
+        CommonResDto<List<UserResDto>> usersByIds
+                = userServiceClient.getUsersByIds(userIds);
+        List<UserResDto> userResDtoList = usersByIds.getResult();
+
+        CommonResDto<List<ProductResDto>> products
+                = productServiceClient.getProducts(productIds);
+        List<ProductResDto> productDtoList = products.getResult();
+
+        // 4. fromEntity 메서드의 매개값으로 적당한 데이터를 전달해야 한다.
+        // 기존의 fromEntity는 이메일은 단일값, 상품명은 id와 상품명을 하나로 맵핑한 Map
+
+        // 회원 번호와 회원의 이메일을 Map으로 맵핑했습니다.
+        // id를 통해 email을 쉽게 얻어내기 위해서.
+        Map<Long, String> userIdToEmailMap = userResDtoList.stream()
+                .collect(Collectors.toMap(
+                        dto -> dto.getId(),
+                        dto -> dto.getEmail()
+                ));
+
+        // 밑에 있는 중복 로직 추출 메서드 호출.
+        Map<Long, String> productIdToNameMap = getProductIdToNameMap(productDtoList);
+
+        /*
+        List<OrderingListResDto> dtos = new ArrayList<>();
+        for (Ordering ordering : orderList) {
+            Long userId = ordering.getUserId();
+            String email = userIdToEmailMap.get(userId);
+            OrderingListResDto orderingListResDto
+                    = ordering.fromEntity(email, productIdToNameMap);
+            dtos.add(orderingListResDto);
+        }
+        */
+
+        List<OrderingListResDto> dtos = orderList.stream()
+                .map(order -> {
+                    Long userId = order.getUserId(); // 주문한 회원의 번호
+                    return order.fromEntity(userIdToEmailMap.get(userId), productIdToNameMap);
+                })
+                .collect(Collectors.toList());
+
+        return dtos;
+    }
+
+
+    public Ordering orderCancel(long id) {
+        // 상태를 CANCEL로 변경해 주세요.
+        // 클라이언트에게는 변경 상태와 주문 id만 넘겨 주세요.
+        Ordering ordering = orderingRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("주문 없는데요!")
+        );
+
+        ordering.updateStatus(OrderStatus.CANCELED); // 더티 체킹 (save를 하지 않아도 변경을 감지한다.)
+        return ordering;
+    }
+
+
+    // 중복 로직 메서드 추출 (상품 아이디와 상품명 맵핑, 주문내역에서 상품번호만 뽑기)
+    private Map<Long, String> getProductIdToNameMap(List<ProductResDto> dtoList) {
+        Map<Long, String> productIdToNameMap = dtoList.stream()
+                .collect(Collectors.toMap(
+                        dto -> dto.getId(), // -> key
+                        dto -> dto.getName()));// -> value로 맵핑
+        return productIdToNameMap;
+    }
+
+    private List<Long> getProductIds(List<Ordering> orderingList) {
         List<Long> productIds = orderingList.stream() // 스트림 준비
                 // flatMap: 하나의 주문 내역에서 상세 주문 내역 리스트를 꺼낸 후 하나의 스트림으로 평탄화
                 /* flatMap의 동작 원리
@@ -133,50 +234,9 @@ public class OrderingService {
                 .map(orderDetail -> orderDetail.getProductId())
                 .distinct()
                 .collect(Collectors.toList());
-
-
-        // Product-service에게 상품 정보를 달라고 요청해야 함.
-        CommonResDto<List<ProductResDto>> products
-                = productServiceClient.getProducts(productIds);
-        List<ProductResDto> dtoList = products.getResult();
-
-        // product-service에게 받아온 리스트를 필요로 하는 정보로만 맵으로 매핑.
-        Map<Long, String> productIdToNameMap = dtoList.stream()
-                .collect(Collectors.toMap(
-                        dto -> dto.getId(), // -> key
-                        dto -> dto.getName()));// -> value로 맵핑
-
-
-        // Ordering 엔터티를 DTO로 변환하자. 주문 상세에 대한 변환도 필요하다!
-        List<OrderingListResDto> dtos = orderingList.stream()
-                .map(order -> order.fromEntity(userInfo.getEmail(), productIdToNameMap))
-                .collect(Collectors.toList());
-
-        return dtos;
+        return productIds;
     }
 
-
-//
-//    public List<OrderingListResDto> orderList() {
-//        List<Ordering> orderList = orderingRepository.findAll();
-//
-//        List<OrderingListResDto> dtos = orderList.stream()
-//                .map(order -> order.fromEntity())
-//                .collect(Collectors.toList());
-//
-//        return dtos;
-//    }
-//
-//    public Ordering orderCancel(long id) {
-//        // 상태를 CANCEL로 변경해 주세요.
-//        // 클라이언트에게는 변경 상태와 주문 id만 넘겨 주세요.
-//        Ordering ordering = orderingRepository.findById(id).orElseThrow(
-//                () -> new EntityNotFoundException("주문 없는데요!")
-//        );
-//
-//        ordering.updateStatus(OrderStatus.CANCELED); // 더티 체킹 (save를 하지 않아도 변경을 감지한다.)
-//        return ordering;
-//    }
 
 }
 

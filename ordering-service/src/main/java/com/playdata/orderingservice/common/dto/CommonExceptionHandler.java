@@ -8,6 +8,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestControllerAdvice
 @Slf4j
@@ -47,6 +48,13 @@ public class CommonExceptionHandler {
         e.printStackTrace();
         CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.UNAUTHORIZED,"arguments not valid");
         return new ResponseEntity<>(commonErrorDto, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(ResponseStatusException.class)
+    public ResponseEntity<CommonErrorDto> validHandler(ResponseStatusException e){
+        e.printStackTrace();
+        CommonErrorDto commonErrorDto = new CommonErrorDto(HttpStatus.FORBIDDEN,e.getMessage());
+        return new ResponseEntity<>(commonErrorDto, HttpStatus.FORBIDDEN);
     }
 
     @ExceptionHandler(Exception.class)
