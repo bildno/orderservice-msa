@@ -34,3 +34,22 @@ eureka:
       defaultZone: http://127.0.0.1:8761/eureka/
   instance:
     instance-id: ${spring.cloud.client.hostname}:${spring.application.instance_id:${random.value}}
+
+# 액츄에이터 등록 (beans: 컨테이너에 등록된 빈 보여줌. health: 서버 살아있는지 알려줌)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: refresh, health, beans
+
+
+
+
+
+
+
+
+
+
+
+
