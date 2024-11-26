@@ -2,12 +2,21 @@ server:
   port: 8888
 
 spring:
+  profiles:
+    active: native
   application:
     name: config-service
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
   # ??? ???? ??
   cloud:
     config:
       server:
+        native:
+          search-locations: file:///Users/stephen/Desktop/develop/git-local-repo
         git:
           # 호스트 키는 SSH 프로토콜을 통해 Git 저장소에 접근할 때 Git 서버의 신뢰성을 검증하기 위한
           # 호스트 키를 제공해야 합니다.
@@ -25,4 +34,4 @@ management:
   endpoints:
     web:
       exposure:
-        include: refresh, health, beans
+        include: refresh, health, beans, busrefresh
