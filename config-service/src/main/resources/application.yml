@@ -9,7 +9,8 @@ spring:
     config:
       server:
         git:
-          uri: file:///Users/stephen/Desktop/develop/git-local-repo
+          uri: https://github.com/LeeKM321/cloud-config-settings.git
+          default-label: main
 
 management:
   endpoints:
