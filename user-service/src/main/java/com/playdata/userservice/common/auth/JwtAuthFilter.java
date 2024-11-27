@@ -35,6 +35,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         String userRole = request.getHeader("X-User-Role");
 
         log.info("userEmail: {}, userRole: {}", userEmail, userRole);
+        log.info("request Url: {}", request.getRequestURI());
 
 
         if (userEmail != null && userRole != null) {

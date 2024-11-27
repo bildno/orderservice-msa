@@ -12,12 +12,32 @@ spring:
     password: guest
   cloud:
     gateway:
+      globalcors:
+        cors-configurations:
+          "[/**]": # 모든 경로에 대한 CORS 설정
+            allowed-origins:
+              - "http://localhost:3000"
+            allowed-methods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowed-headers:
+              - "Content-Type"
+              - "Authorization"
+              - "X-Requested-With"
+            allow-credentials: true
       default-filters:
         - name: GlobalFilter
           args:
             baseMessage: merong
             preLogger: true
             postLogger: true
+        - name: DedupeResponseHeader
+          args:
+            name: Access-Control-Allow-Credentials Access-Control-Allow-Origin
+            strategy: RETAIN_FIRST
       routes:
         - id: user-service
           uri: lb://USER-SERVICE
