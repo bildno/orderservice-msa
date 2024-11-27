@@ -8,11 +8,11 @@ jasypt:
 spring:
   application:
     name: user-service
-  datasource:
-    url: jdbc:mysql://localhost:3306/orderservice?serverTimezone=Asia/Seoul
-    username: root
-    password: mysql
-    driver-class-name: com.mysql.cj.jdbc.Driver
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/orderservice?serverTimezone=Asia/Seoul
+#    username: root
+#    password: mysql
+#    driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     database: mysql
     database-platform: org.hibernate.dialect.MySQL8Dialect
@@ -20,7 +20,7 @@ spring:
       ddl-auto: update
   data:
     redis:
-      host: ENC(dk53q67QuttG3LG0uf7bby9G+qSclE6kg2b/ZsszYzPNJE4Y8f+RojHwhJBs73Lp)
+      host: localhost
       port: 6379
   rabbitmq:
     host: localhost
