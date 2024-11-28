@@ -119,7 +119,7 @@ eureka:
 
 jwt:
   expiration: 30
-  secretKey: rI9KLc/nWq+0ehvbQXjST52lIHi+A4PurdKwAe0ZcN+0LE1QBv7p0qhFx8wzt8PaigtMXpJHdIl6p4ILsLDasA==
+  secretKey: MXfAuvUHe7vyOo6rfHPMZga4b7YgvokM/B9ytSRaAYsXii76YlbTPPvE6KtgHqUvhfSU528DjR4H1xUNGuIzQg==
 
 management:
   endpoints:

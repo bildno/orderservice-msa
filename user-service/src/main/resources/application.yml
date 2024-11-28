@@ -33,14 +33,12 @@ spring:
   cloud:
     refresh:
       extra-refreshable: com.zaxxer.hikari.HikariDataSource
-
 jwt:
   expiration: 30
-  secretKey: rI9KLc/nWq+0ehvbQXjST52lIHi+A4PurdKwAe0ZcN+0LE1QBv7p0qhFx8wzt8PaigtMXpJHdIl6p4ILsLDasA==
+  secretKey: MXfAuvUHe7vyOo6rfHPMZga4b7YgvokM/B9ytSRaAYsXii76YlbTPPvE6KtgHqUvhfSU528DjR4H1xUNGuIzQg==
 
   expirationRt: 14400
-  secretKeyRt: lGBm6kwqJoKjLioZfyYJ+OTstjyczTbf7tJXar1pQ2PDSeg5LZQ30DXDlLbM7zKiysBfPkdv6KTVOJ+UcL5C6g==
-
+  secretKeyRt: yajVyBouoQWnRXj1g7xxSTXMamcw3p2hEEbhe3cFzxuHXsg4IXVe+qN9baNmuxd2Fo+YbB6VeBSI0AIz2Frw9w==
 eureka:
   client:
     register-with-eureka: true
