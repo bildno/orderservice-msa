@@ -8,7 +8,7 @@ pipeline {
     environment{
         REGION = "ap-northeast-2"
         ECR_URL = "872651651829.dkr.ecr.ap-northeast-2.amazonaws.com"
-        SERVICE_DIRS = ['config-service', 'discovery-service', 'gateway-service', 'user-service', 'order-service', 'product-service']
+        SERVICE_DIRS = "config-service,discovery-service,gateway-service,user-service,order-service,product-service"
     }
 
     stages {
@@ -29,6 +29,7 @@ pipeline {
             steps {
                 script {
                     withAWS(region: "${REGION}", credentials: "aws-key") {
+                        def serviceDirs = env.SERVICE_DIRS.split(",")
                         SERVICE_DIRS.each { service ->
                              sh """
                                     curl -O https://amazon-ecr-credential-helper-releases.s3.us-east-2.amazonaws.com/0.4.0/linux-amd64/${ecrLoginHelper}
