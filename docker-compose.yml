@@ -1,0 +1,69 @@
+services:
+  config-service:
+    image: 183295413020.dkr.ecr.ap-northeast-2.amazonaws.com/config-service:latest
+    container_name: config-service
+    ports:
+      - "8888:8888"
+    networks:
+      - msa-network
+    restart: always
+
+  discovery-service:
+    image: 183295413020.dkr.ecr.ap-northeast-2.amazonaws.com/discovery-service:latest
+    container_name: discovery-service
+    ports:
+      - "8761:8761"
+    networks:
+      - msa-network
+    restart: always
+
+  gateway-service:
+    image: 183295413020.dkr.ecr.ap-northeast-2.amazonaws.com/gateway-service:latest
+    container_name: gateway-service
+    ports:
+      - "8000:8000"
+    networks:
+      - msa-network
+    depends_on:
+      - discovery-service
+      - config-service
+    restart: always
+
+  user-service:
+    image: 183295413020.dkr.ecr.ap-northeast-2.amazonaws.com/user-service:latest
+    container_name: user-service
+    networks:
+      - msa-network
+    depends_on:
+      - discovery-service
+      - config-service
+    restart: always
+
+  order-service:
+    image: 183295413020.dkr.ecr.ap-northeast-2.amazonaws.com/order-service:latest
+    container_name: order-service
+    networks:
+      - msa-network
+    depends_on:
+      - discovery-service
+      - config-service
+    restart: always
+
+  product-service:
+    image: 183295413020.dkr.ecr.ap-northeast-2.amazonaws.com/product-service:latest
+    container_name: product-service
+    networks:
+      - msa-network
+    depends_on:
+      - discovery-service
+      - config-service
+    restart: always
+
+  redis:
+    image: redis:latest
+    ports:
+      - '6379:6379'
+
+networks:
+  msa-network:
+    driver: bridge # Docker의 기본 네트워크 드라이버, 동일한 호스트 내에세 통신할 수 있도록 설정
