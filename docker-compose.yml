@@ -9,7 +9,7 @@ services:
     restart: always
 
   discovery-service:
-    image: 183295413020.dkr.ecr.ap-northeast-2.amazonaws.com/discovery-service:latest
+    image: 183295413020.dkr.ecr.ap-northeast-2.amazonaws.com/discoveryservice:latest
     container_name: discovery-service
     ports:
       - "8761:8761"
@@ -40,8 +40,8 @@ services:
     restart: always
 
   order-service:
-    image: 183295413020.dkr.ecr.ap-northeast-2.amazonaws.com/order-service:latest
-    container_name: order-service
+    image: 183295413020.dkr.ecr.ap-northeast-2.amazonaws.com/ordering-service:latest
+    container_name: ordering-service
     networks:
       - msa-network
     depends_on:
