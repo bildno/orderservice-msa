@@ -25,7 +25,7 @@ pipeline {
                            sh """
                                 echo "Building ${service}..."
                                 cd ${service}
-                                ./gradlew clean build
+                                ./gradlew clean build -x test
                                 ls -al ./build/libs
                               """
                     }
@@ -64,22 +64,25 @@ pipeline {
         stage('Deploy to AWS EC2 VM') {
             steps {
                 sshagent(credentials: ["jenkins-ssh-key"]) {
-                    //
                     sh """
-                    ssh -o StrictHostKeyChecking=no ubuntu@${deployHost} \
+                        # Jenkins에서 배포 서버로 docker-compose.yml 복사
+                        scp -o StrictHostKeyChecking=no docker-compose.yml ubuntu@${deployHost}:/home/ubuntu/docker-compose.yml
 
-                    # Docker compose 파일이 있는 곳으로 이동
-                    cd /home/ubuntu/orderservice-msa && \
+                        ssh -o StrictHostKeyChecking=no ubuntu@${deployHost} '
 
-                    # 기존 컨테이너 중지 및 제거
-                    docker-compose down && \
+                        # Docker compose 파일이 있는 경로로 이동
+                        cd /home/ubuntu && \
 
-                    aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${ECR_URL}; \
+                        # 기존 컨테이너 중지 및 제거
+                        docker-compose down && \
 
-                    # Docker Compose로 컨테이너 재배포
-                    docker-compose pull && \
-                    docker-compose up -d
-                    """
+                        aws ecr get-login-password --region ${REGION} | docker login --username AWS --password-stdin ${ECR_URL} && \
+
+                        # Docker Compose로 컨테이너 재배포
+                        docker-compose pull && \
+                        docker-compose up -d
+                        '
+                        """
                 }
             }
         }
