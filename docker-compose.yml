@@ -25,7 +25,7 @@ services:
     ports:
       - "8761:8761"
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://3.38.196.170:8761" ]
+      test: [ "CMD", "curl", "-f", "http://43.202.155.92:8761" ]
       interval: 15s
       timeout: 5s
       retries: 3

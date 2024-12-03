@@ -20,7 +20,7 @@ spring:
         git:
           # 호스트 키는 SSH 프로토콜을 통해 Git 저장소에 접근할 때 Git 서버의 신뢰성을 검증하기 위한
           # 호스트 키를 제공해야 합니다.
-          uri: git@github.com:bildno/cloud-config-settings.git
+          uri: git@github.com:bildno/cloude-config-settings.git
           default-label: main
           host-key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC1TA1BJnQWaSfx2SImH+rSXYLew96aBG11yBNF7D0yQ7zJDIfUNoHafoOCOnVQlbWFLB6JheSbyhaO0/RFUm6dcLt0p2qu4geClLS9Rp0JFLzoJUQXuk2WZW8I105IpMhgty8q2/v6z4TdZI40SobfsbMq6/Lg7nUZA31tK6IOjcqkP1tA2PrjUzB+5inyT4sBHfUAEdNkPXX7JN/pVxOqmskfYoayE2CaM7vZd9bMlS/T2vTLWZREQUAIV8FGUi3VIKkTsEqojCQ00k3ckriF94jMX0GNv5XlT+s0pwzNPnG13IiQC0MWbayDsTg47WeBaD8R9fl6kY+XhYVLbtpB8vAe7LxIpH7F+3TCo0uSh/WIJ8y9Bg5jmM4QHLHEphdw3WC98hxcYEDgjefIR8Jd6cIvxifWrpakw43i7yAMwX2oyCwV6HtY6l6A5H0o8UUBjbWrYasu/gVoKU3iJ1b9cLJlXOImZoqCFP4uCoTVPpLM4wWcAB0qvMg8TnUU7VM= 이진규@DESKTOP-FA0KN9K"
           host-key-algorithm: "ssh-rsa"
