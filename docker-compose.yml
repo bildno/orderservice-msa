@@ -10,7 +10,7 @@ services:
       - SPRING_RABBITMQ_HOST=rabbitmq
       - SPRING_RABBITMQ_PORT=5672
     healthcheck:
-      test: [ "CMD", "curl", "-f", "http://3.38.196.170:8888/actuator/health" ]
+      test: [ "CMD", "curl", "-f", "http://43.202.155.92:8888/actuator/health" ]
       interval: 15s
       timeout: 5s
       retries: 3
