@@ -12,7 +12,7 @@ spring:
     password: guest
   cloud:
     gateway:
-      globalcors:
+      globalctors:
         cors-configurations:
           "[/**]": # 모든 경로에 대한 CORS 설정
             allowed-origins:
